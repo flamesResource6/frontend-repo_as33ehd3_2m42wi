@@ -1,28 +1,35 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import Hero from './components/Hero';
+import TopicList from './components/TopicList';
+import Composer from './components/Composer';
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [selected, setSelected] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-pink-50 via-sky-50 to-violet-50">
+      <Hero />
+      <main className="max-w-6xl mx-auto px-6 py-8">
+        {!selected && (
+          <div className="grid gap-6">
+            <Composer onCreated={() => setRefreshKey(k => k + 1)} />
+            <TopicList key={refreshKey} onSelect={setSelected} />
+          </div>
+        )}
+        {selected && (
+          <div className="grid gap-6">
+            <TopicDetailWrapper topic={selected} onBack={() => setSelected(null)} />
+          </div>
+        )}
+      </main>
+      <footer className="py-8 text-center text-slate-500">Made for thoughtful, respectful debate • Pastel vibes ✨</footer>
     </div>
-  )
+  );
 }
 
-export default App
+import TopicDetail from './components/TopicDetail';
+function TopicDetailWrapper({ topic, onBack }) {
+  // Keep topic live by merging updated counts when navigating back and forth if needed
+  return <TopicDetail topic={topic} onBack={onBack} />;
+}
